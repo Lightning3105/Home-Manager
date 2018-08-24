@@ -1,1 +1,9 @@
-/etc/nginx/sites-available/home_manager
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/pi/.scripts/home_manager/run/home_manager.sock;
+    }
+}
