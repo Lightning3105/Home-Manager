@@ -2,6 +2,9 @@ import flask
 import requests
 import schedule
 from subprocess import Popen
+import light_control
+from threading import  Thread
+import time
 
 app = flask.Flask(__name__)
 
@@ -15,15 +18,40 @@ def screen(power):
 	Popen(['vcgencmd', 'display_power', power])
 	return 'Done'
 
-schedule.every().day.at("22:30").do(screen, power='0')
-
 @app.route('/')
 def root():
 	return 'Welcome'
 
 @app.route('/api/server/<path:path>')
 def server_proxy(path):
-	return requests.get('http://192.168.1.5:5555/' + path)
+	try:
+		return requests.get('http://192.168.1.5:5555/' + path).text
+	except requests.exceptions.ConnectionError:
+		return 'Server connection not established'
+
+@app.route('/api/lights/<path:command>')
+def lights(command):
+	light_control.set(command)
+	return "Done"
+
+@app.route('/api/action/night')
+def goodnight():
+	screen(0)
+	server_proxy('suspend')
+	return "Done"
+
+def start_scheduler():
+	schedule.every().day.at("22:30").do(goodnight)
+
+	def _schedule():
+		while True:
+			schedule.run_pending()
+			time.sleep(1)
+
+	t = Thread(target=_schedule)
+	t.start()
+
+start_scheduler()
 
 if __name__ == "__main__":
 	app.run(debug=True, host='0.0.0.0')
