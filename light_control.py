@@ -26,6 +26,10 @@ def set(command):
 			pass # do some scheduling here
 
 		led_light = get_led()
+		if mode == "off":
+		    turn_off(main_light)
+		    turn_off(led_light)
+		    return
 		turn_on(led_light)
 		set_colour(led_light, palette[mode]['led'])
 

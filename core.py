@@ -5,6 +5,8 @@ from subprocess import Popen
 import light_control
 from threading import  Thread
 import time
+from flic import flic_client
+#killall flicd
 
 app = flask.Flask(__name__)
 
