@@ -2,17 +2,10 @@ from lifxlan import LifxLAN
 from lifxlan.light import Light as LifxLightType
 import flux_led
 import colorsys
+from json import load
 
-palette = {
-	'evening': {
-		'main': (0.37, 0.19, 0.42),
-		'led': (0.24, 0.98, 0.24)
-	},
-	'night': {
-			'main': (0.14, 0.06, 0.09),
-			'led': (0.43, 0.18, 0.6)
-		}
-}
+with open('config.json') as f:
+	palette = load(f)['palette']
 
 def set(command):
 	command = command.split('/')
@@ -27,16 +20,18 @@ def set(command):
 
 		led_light = get_led()
 		if mode == "off":
-		    turn_off(main_light)
-		    turn_off(led_light)
-		    return
+			turn_off(main_light)
+			turn_off(led_light)
+			return
 		turn_on(led_light)
 		set_colour(led_light, palette[mode]['led'])
+
 
 def get_lifx():
 	lan = LifxLAN(1)
 	lights = lan.get_lights()
 	return lights[0]
+
 
 def get_led():
 	scanner = flux_led.BulbScanner()

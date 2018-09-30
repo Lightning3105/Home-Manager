@@ -11,6 +11,10 @@ from threading import Timer, Thread
 from requests import get
 from subprocess import Popen
 from time import sleep
+from json import load
+
+with open('config.json') as f:
+	commands = load(f)['flic']
 
 
 Popen(['flic/armv6l/flicd', '-f', 'flic/flic.sqlite3'])
@@ -56,19 +60,19 @@ def single_click_action():
 	global timer
 	timer = None
 	print("single")
-	get("http://localhost/api/lights/mode/evening")
+	get("http://localhost/api/" + commands['single'])
 
 def double_click_action():
 	global timer
 	timer = None
 	print("double")
-	get("http://localhost/api/lights/mode/night")
+	get("http://localhost/api/" + commands['double'])
 
 def hold_press_action():
 	global timer
 	timer = None
 	print("hold")
-	get("http://localhost/api/lights/mode/off")
+	get("http://localhost/api/" + commands['hold'])
 		
 
 client.get_info(got_info)
