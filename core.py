@@ -32,6 +32,7 @@ def server_proxy(path):
 @app.route('/api/server/restart')
 def restart():
 	Popen(['systemctl', 'restart', 'home_manager.service'])
+	return "Done"
 
 @app.route('/api/lights/<path:command>')
 def lights(command):
