@@ -1,10 +1,8 @@
 import flask
 import requests
-import schedule
+from schedule import start_scheduler
 from subprocess import Popen
 import light_control
-from threading import  Thread
-import time
 from flic import flic_client
 #killall flicd
 
@@ -41,17 +39,6 @@ def goodnight():
 	screen(0)
 	server_proxy('suspend')
 	return "Done"
-
-def start_scheduler():
-	schedule.every().day.at("22:30").do(goodnight)
-
-	def _schedule():
-		while True:
-			schedule.run_pending()
-			time.sleep(1)
-
-	t = Thread(target=_schedule)
-	t.start()
 
 start_scheduler()
 

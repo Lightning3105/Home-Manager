@@ -51,7 +51,7 @@ def handle_click(channel, click_type, was_queued, time_diff):
 			double_click_action()
 		else:
 			timer = Timer(timeout, hold_press_action)
-			timer.start();
+			timer.start()
 	if click_type == fliclib.ClickType.ButtonUp:
 		if timer is not None:
 			timer.cancel()
