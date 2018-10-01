@@ -26,6 +26,6 @@
     {"time": "22:30", "day": ["all"], "command": "action/night"},
     {"time": "23:00", "day": ["all"], "command": "lights/mode/night/on"},
     {"time": "sunset", "day": ["all"], "command": "lights/mode/evening/on"},
-    {"time": "11:00", "day": ["all"], "command": "lights/mode/evening/auto"},
+    {"time": "11:00", "day": ["all"], "command": "lights/mode/evening/auto"}
   ]
 }
