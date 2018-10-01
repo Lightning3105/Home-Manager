@@ -29,6 +29,10 @@ def server_proxy(path):
 	except requests.exceptions.ConnectionError:
 		return 'Server connection not established'
 
+@app.route('/api/server/restart')
+def restart():
+	Popen(['systemctl', 'restart', 'home_manager.service'])
+
 @app.route('/api/lights/<path:command>')
 def lights(command):
 	light_control.set(command)
