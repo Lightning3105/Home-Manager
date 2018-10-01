@@ -21,7 +21,7 @@ def screen(power):
 
 @app.route('/api/manager/restart')
 def restart():
-	Popen(['systemctl', 'restart', 'home_manager.service'])
+	Popen(['sudo', 'systemctl', 'restart', 'home_manager.service'])
 	return "Done"
 
 
