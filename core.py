@@ -18,6 +18,13 @@ def screen(power):
 	Popen(['vcgencmd', 'display_power', power])
 	return 'Done'
 
+
+@app.route('/api/manager/restart')
+def restart():
+	Popen(['systemctl', 'restart', 'home_manager.service'])
+	return "Done"
+
+
 @app.route('/')
 def root():
 	return 'Welcome'
@@ -28,11 +35,6 @@ def server_proxy(path):
 		return requests.get('http://192.168.1.5:5555/' + path).text
 	except requests.exceptions.ConnectionError:
 		return 'Server connection not established'
-
-@app.route('/api/server/restart')
-def restart():
-	Popen(['systemctl', 'restart', 'home_manager.service'])
-	return "Done"
 
 @app.route('/api/lights/<path:command>')
 def lights(command):
