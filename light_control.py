@@ -93,25 +93,6 @@ def set(command):
 		log(traceback.format_exc())
 		print(traceback.format_exc())
 
-
-"""
-		if len(command) > 2:
-	state = command[2]
-else:
-	state = "on"
-else:
-	if state == "silent":
-		main_light.stored_colour = get_palette()[mode]['main']
-		led_light.stored_colour = get_palette()[mode]['led']
-	else:
-		main_light.set_colour(get_palette()[mode]['main'])
-		led_light.set_colour(get_palette()[mode]['led'])
-
-	if state == "on":
-		main_light.turn_on()
-		led_light.turn_on()"""
-
-
 def _set(command):
 	command = command.split('/')
 	if command[0] == 'mode':

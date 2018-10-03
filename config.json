@@ -18,9 +18,9 @@
     }
   },
   "flic": {
-    "single": "lights/mode/on",
-    "double": "lights/mode/night",
-    "hold": "lights/mode/off"
+    "single": "lights/on",
+    "double": "",
+    "hold": "lights/off"
   },
   "schedule": [
     {"time": "11:00", "day": ["all"], "command": "lights/mode/day/auto"},

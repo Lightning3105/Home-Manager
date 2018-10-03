@@ -52,6 +52,10 @@ def goodnight():
 	server_proxy('suspend')
 	return "Done"
 
+@app.route('/api/')
+def app_end():
+	return "Api"
+
 @app.route('/logs')
 def logs():
 	out = """
