@@ -23,10 +23,10 @@
     "hold": "lights/mode/off"
   },
   "schedule": [
+    {"time": "11:00", "day": ["all"], "command": "lights/mode/day/auto"},
     {"time": "sunset", "day": ["all"], "command": "lights/mode/evening/on"},
-    {"time": "23:00", "day": ["all"], "command": "lights/mode/night/on"},
-    {"time": "20:00", "day": ["all"], "command": "lights/mode/night/silent"},
     {"time": "22:30", "day": ["all"], "command": "action/night"},
-    {"time": "11:00", "day": ["all"], "command": "lights/mode/evening/auto"}
+    {"time": "22:30", "day": ["all"], "command": "lights/mode/night/on"},
+    {"time": "23:30", "day": ["all"], "command": "lights/mode/dark/silent"}
   ]
 }

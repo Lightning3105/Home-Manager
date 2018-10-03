@@ -41,6 +41,13 @@ def start_scheduler():
 	t.start()
 
 if __name__ == "__main__":
-	start_scheduler()
-	while True:
-		pass
+	if False:
+		start_scheduler()
+		while True:
+			pass
+	if True:
+		for trigger in get_schedules():
+			print(trigger['command'])
+			get("http://localhost:5000/api/" + trigger["command"])
+			time.sleep(3)
+		get("http://localhost:5000/api/lights/on")

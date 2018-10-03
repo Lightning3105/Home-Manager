@@ -20,8 +20,9 @@ class Light:
 		if self.lifx:
 			try:
 				self.controller.set_power(1, duration=duration)
-			except WorkflowException:
-				pass
+			except WorkflowException as e:
+				log(e)
+				print(e)
 		if self.led:
 			self.controller.turnOn()
 
@@ -129,6 +130,8 @@ def _set(command):
 	if command[0] == 'auto':
 		main_light.set_colour()
 		led_light.set_colour()
+	if command[0] == 'silent':
+		pass # Don't update
 
 
 
