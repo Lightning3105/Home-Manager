@@ -111,7 +111,6 @@ else:
 		led_light.turn_on()"""
 
 
-# TODO: Cur mode stuff, persistent modes, etc
 def _set(command):
 	command = command.split('/')
 	if command[0] == 'mode':

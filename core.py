@@ -3,7 +3,7 @@ import requests
 from schedule import start_scheduler
 from subprocess import Popen
 import light_control
-from data import log
+from data import log, get_logs
 
 try:
 	from flic import flic_client
@@ -51,6 +51,40 @@ def goodnight():
 	screen(0)
 	server_proxy('suspend')
 	return "Done"
+
+@app.route('/logs')
+def logs():
+	out = """
+	<head>
+		<title>Logs</title>
+	</head>
+	
+	<body>
+		<table>
+			<tr>
+			    <th>Time</th>
+			    <th>Message</th> 
+			  </tr>
+	"""
+	lgs = get_logs()
+	for l in lgs:
+		try:
+			t = l.split("]")[0].strip("[")
+			m = l.split("]")[1]
+		except IndexError:
+			t = ""
+			m = l
+		out += """
+		<tr>
+			<td>{}</td>
+			<td>{}</td>
+		</tr>""".format(t, m)
+	out += """</tr>
+	</table>
+	</body>"""
+
+	return out
+
 
 start_scheduler()
 

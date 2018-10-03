@@ -12,7 +12,7 @@ from requests import get
 from subprocess import Popen
 from time import sleep
 from json import load
-from ..data import log
+from data import log
 
 
 def get_commands():

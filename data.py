@@ -40,3 +40,7 @@ def log(*args):
 			pass
 	with open(log_file, 'a') as f:
 		f.write(logstr)
+
+def get_logs():
+	with open(log_file, 'r') as f:
+		return f.read().split('\n')
