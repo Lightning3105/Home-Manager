@@ -6,6 +6,7 @@ from dateutil.tz import tzlocal
 from datetime import datetime
 from requests import get
 from suntime import Sun
+from data import log
 
 latitude = 50.9397733
 longitude = -1.4016822
@@ -24,18 +25,22 @@ def _schedule():
 			if "all" in days or cur_time.strftime("%a") in days:
 				if trigger["time"] == "sunset":
 					t = sun.get_sunset_time().astimezone(tz=tzlocal()).replace(tzinfo=None)
-					print("sunset", t)
+					#print("sunset", t)
 				else:
 					t = parse(trigger["time"])
 				#print("{} triggers at {} in {} seconds".format(trigger["command"], t, (t - cur_time).seconds))
 				if abs((t - cur_time).seconds) < 10:
+					log(trigger, 'triggered at', t)
 					get("http://localhost/api/" + trigger["command"])
 		time.sleep(5)
 
 def start_scheduler():
 	#schedule.every().day.at("22:30").do(goodnight).tag()
 	t = Thread(target=_schedule)
+	t.setDaemon(True)
 	t.start()
 
 if __name__ == "__main__":
 	start_scheduler()
+	while True:
+		pass

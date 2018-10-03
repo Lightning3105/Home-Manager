@@ -12,6 +12,7 @@ from requests import get
 from subprocess import Popen
 from time import sleep
 from json import load
+from ..data import log
 
 
 def get_commands():
@@ -61,19 +62,19 @@ def handle_click(channel, click_type, was_queued, time_diff):
 def single_click_action():
 	global timer
 	timer = None
-	print("single")
+	log("flic single")
 	get("http://localhost/api/" + get_commands()['single'])
 
 def double_click_action():
 	global timer
 	timer = None
-	print("double")
+	log("flic double")
 	get("http://localhost/api/" + get_commands()['double'])
 
 def hold_press_action():
 	global timer
 	timer = None
-	print("hold")
+	log("flic hold")
 	get("http://localhost/api/" + get_commands()['hold'])
 		
 

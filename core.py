@@ -3,7 +3,12 @@ import requests
 from schedule import start_scheduler
 from subprocess import Popen
 import light_control
-from flic import flic_client
+from data import log
+
+try:
+	from flic import flic_client
+except OSError:
+	pass
 #killall flicd
 
 app = flask.Flask(__name__)

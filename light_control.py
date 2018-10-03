@@ -1,3 +1,5 @@
+import traceback
+
 from lifxlan import LifxLAN
 from lifxlan.light import Light as LifxLightType
 from lifxlan.errors import WorkflowException
@@ -6,13 +8,13 @@ import colorsys
 from json import load
 from time import sleep
 from threading import Timer
+from data import log, data_file
 
 class Light:
 	def __init__(self, controller):
 		self.controller = controller
 		self.lifx = type(controller) == LifxLightType
 		self.led = type(controller) == flux_led.WifiLedBulb
-		self.stored_colour = None
 
 	def turn_on(self, duration=600):
 		if self.lifx:
@@ -23,9 +25,8 @@ class Light:
 		if self.led:
 			self.controller.turnOn()
 
-		if self.stored_colour is not None:
-			timer = Timer(1, self.set_stored_colour)
-			timer.start()
+		timer = Timer(1, self.set_colour)
+		timer.start()
 
 	def turn_off(self, duration=900):
 		if self.lifx:
@@ -36,31 +37,31 @@ class Light:
 		if self.led:
 			self.controller.turnOff()
 
-	def set_stored_colour(self):
-		self.set_colour(self.stored_colour)
-		self.stored_colour = None
-
 	def is_on(self):
 		if self.lifx:
 			return self.controller.get_power() == 65535
 		if self.led:
 			return self.controller.is_on
 
-	def set_colour(self, colour, duration=500):
-		if not self.is_on() or colour != self.stored_colour:
-			self.stored_colour = colour
-		elif self.lifx:
-			colour = lifx_convert_colour(colour)
-			self.controller.set_color(colour, duration=duration)
-		elif self.led:
-			colour = led_convert_colour(colour)
-			self.controller.setRgb(*colour)
+	def set_colour(self, colour=None, duration=500):
+		if self.is_on():
+			if self.lifx:
+				if colour is None:
+					colour = get_palette()[data_file.get('mode')]['main']
+				colour = lifx_convert_colour(colour)
+				self.controller.set_color(colour, duration=duration)
+			elif self.led:
+				if colour is None:
+					colour = get_palette()[data_file.get('mode')]['led']
+				colour = led_convert_colour(colour)
+				self.controller.setRgb(*colour)
 
 	def get_colour(self):
 		if self.lifx:
 			return self.controller.get_color()
 		if self.led:
 			return self.controller.getRgb()
+
 
 def get_palette():
 	with open('config.json') as f:
@@ -85,23 +86,50 @@ led_light = Light(get_led())
 
 
 def set(command):
+	try:
+		_set(command)
+	except Exception as e:
+		log(traceback.format_exc())
+		print(traceback.format_exc())
+
+
+"""
+		if len(command) > 2:
+	state = command[2]
+else:
+	state = "on"
+else:
+	if state == "silent":
+		main_light.stored_colour = get_palette()[mode]['main']
+		led_light.stored_colour = get_palette()[mode]['led']
+	else:
+		main_light.set_colour(get_palette()[mode]['main'])
+		led_light.set_colour(get_palette()[mode]['led'])
+
+	if state == "on":
+		main_light.turn_on()
+		led_light.turn_on()"""
+
+
+# TODO: Cur mode stuff, persistent modes, etc
+def _set(command):
 	command = command.split('/')
 	if command[0] == 'mode':
 		mode = command[1]
-		if len(command) > 2:
-			state = command[2]
+		data_file.set('mode', mode)
+		if len(command) < 3:
+			command = ['auto']
 		else:
-			state = "on"
-		if mode == "off":
-			main_light.turn_off()
-			led_light.turn_off()
-		else:
-			main_light.set_colour(get_palette()[mode]['main'])
-			led_light.set_colour(get_palette()[mode]['led'])
-
-			if state == "on":
-				main_light.turn_on()
-				led_light.turn_on()
+			command = command[2:]
+	if command[0] == 'on':
+		main_light.turn_on()
+		led_light.turn_on()
+	if command[0] == 'off':
+		main_light.turn_off()
+		led_light.turn_off()
+	if command[0] == 'auto':
+		main_light.set_colour()
+		led_light.set_colour()
 
 
 
@@ -135,7 +163,7 @@ def test_mode(mode, state):
 	sleep(3)
 
 if __name__ == "__main__":
-	if True:
+	if False:
 		test_mode('mode/day', 'auto')
 		test_mode('mode/evening', 'auto')
 		test_mode('mode/night', 'auto')
@@ -148,4 +176,10 @@ if __name__ == "__main__":
 			main_light.turn_on()
 			led_light.turn_on()
 			sleep(2)
-	#get_colours()
+	if True:
+		set('off')
+		sleep(2)
+		set('mode/day/auto')
+		sleep(2)
+		set('on')
+	#set('mode/night')
