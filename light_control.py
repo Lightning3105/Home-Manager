@@ -25,14 +25,10 @@ class Light:
 				print(e)
 		if self.led:
 			self.controller.turnOn()
-			log("LED turn on", self.is_on())
-			log(self.controller.query_state())
-			log(self.controller.update_state())
-			log(self.controller.query_state())
-			log("===")
 			if not self.is_on():
 				log("Led Strip unresponsive turn on")
-				raise Exception("Led Strip unresponsive")
+				connect_lights()
+				self.turn_on()
 
 		timer = Timer(1, self.set_colour)
 		timer.start()
@@ -46,14 +42,10 @@ class Light:
 				print(e)
 		if self.led:
 			self.controller.turnOff()
-			log("LED turn off", not self.is_on())
-			log(self.controller.query_state())
-			log(self.controller.update_state())
-			log(self.controller.query_state())
-			log("===")
 			if self.is_on():
 				log("Led Strip unresponsive turn off")
-				raise Exception("Led Strip unresponsive")
+				connect_lights()
+				self.turn_off()
 
 	def is_on(self):
 		if self.lifx:
@@ -136,7 +128,8 @@ def _set(command):
 		led_light.set_colour()
 	if command[0] == 'silent':
 		pass # Don't update
-
+	if command[0] == 'reconnect':
+		connect_lights()
 
 
 def lifx_convert_colour(colour):
