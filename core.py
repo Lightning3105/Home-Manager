@@ -4,6 +4,7 @@ from schedule import start_scheduler
 from subprocess import Popen
 import light_control
 from data import log, get_logs
+import re
 
 try:
 	from flic import flic_client
@@ -72,10 +73,11 @@ def logs():
 	"""
 	lgs = get_logs()
 	for l in lgs:
-		try:
-			t = l.split("]")[0].strip("[")
-			m = l.split("]")[1]
-		except IndexError:
+		regex = r"(\[\d*/\d*/\d*\s\d*\:\d*\:\d*\])\s(.*)"
+		matches = list(re.finditer(regex, l))
+		if len(matches) > 0:
+			t, m = matches[0].groups()
+		else:
 			t = ""
 			m = l
 		out += """
