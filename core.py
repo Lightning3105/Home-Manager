@@ -93,11 +93,13 @@ def logs():
 
 	return out
 
-@app.route('/update')
+@app.route('/api/manager/update')
+@app.before_first_request
 def update():
 	cur_dir = path.dirname(path.realpath(__file__))
 	Popen(['git', 'pull'], cwd=cur_dir)
 	return "Done"
+
 
 start_scheduler()
 
