@@ -25,6 +25,11 @@ class Light:
 				print(e)
 		if self.led:
 			self.controller.turnOn()
+			log("LED turn on", self.is_on())
+			log(self.controller.query_state())
+			log(self.controller.update_state())
+			log(self.controller.query_state())
+			log("===")
 			if not self.is_on():
 				log("Led Strip unresponsive turn on")
 				raise Exception("Led Strip unresponsive")
@@ -41,6 +46,11 @@ class Light:
 				print(e)
 		if self.led:
 			self.controller.turnOff()
+			log("LED turn off", not self.is_on())
+			log(self.controller.query_state())
+			log(self.controller.update_state())
+			log(self.controller.query_state())
+			log("===")
 			if self.is_on():
 				log("Led Strip unresponsive turn off")
 				raise Exception("Led Strip unresponsive")
@@ -87,10 +97,17 @@ def get_led():
 	#lights = scanner.scan(timeout=1)
 	return flux_led.WifiLedBulb('192.168.1.11')
 
+def connect_lights():
+	global main_light
+	global led_light
+	try:
+		main_light = Light(get_lifx())
+		led_light = Light(get_led())
+	except Exception as e:
+		log(e)
+		print(e)
 
-main_light = Light(get_lifx())
-led_light = Light(get_led())
-
+connect_lights()
 
 def set(command):
 	try:
