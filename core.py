@@ -1,3 +1,5 @@
+from os import path
+
 import flask
 import requests
 from schedule import start_scheduler
@@ -91,6 +93,11 @@ def logs():
 
 	return out
 
+@app.route('/update')
+def update():
+	cur_dir = path.dirname(path.realpath(__file__))
+	Popen(['git', 'pull'], cwd=cur_dir)
+	return "Done"
 
 start_scheduler()
 
