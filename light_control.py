@@ -26,6 +26,7 @@ class Light:
 		if self.led:
 			self.controller.turnOn()
 			if not self.is_on():
+				log("Led Strip unresponsive turn on")
 				raise Exception("Led Strip unresponsive")
 
 		timer = Timer(1, self.set_colour)
@@ -41,6 +42,7 @@ class Light:
 		if self.led:
 			self.controller.turnOff()
 			if self.is_on():
+				log("Led Strip unresponsive turn off")
 				raise Exception("Led Strip unresponsive")
 
 	def is_on(self):
