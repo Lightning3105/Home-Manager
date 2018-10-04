@@ -1,7 +1,7 @@
 import traceback
 
 from lifxlan import LifxLAN
-from lifxlan.light import Light as LifxLightType
+from lifxlan.light import Light as LifxLight
 from lifxlan.errors import WorkflowException
 import flux_led
 import colorsys
@@ -13,7 +13,7 @@ from data import log, data_file
 class Light:
 	def __init__(self, controller):
 		self.controller = controller
-		self.lifx = type(controller) == LifxLightType
+		self.lifx = type(controller) == LifxLight
 		self.led = type(controller) == flux_led.WifiLedBulb
 
 	def turn_on(self, duration=600):
@@ -25,6 +25,8 @@ class Light:
 				print(e)
 		if self.led:
 			self.controller.turnOn()
+			if not self.is_on():
+				raise Exception("Led Strip unresponsive")
 
 		timer = Timer(1, self.set_colour)
 		timer.start()
@@ -33,10 +35,13 @@ class Light:
 		if self.lifx:
 			try:
 				self.controller.set_power(0, duration=duration)
-			except WorkflowException:
-				pass
+			except WorkflowException as e:
+				log(e)
+				print(e)
 		if self.led:
 			self.controller.turnOff()
+			if self.is_on():
+				raise Exception("Led Strip unresponsive")
 
 	def is_on(self):
 		if self.lifx:
@@ -70,16 +75,15 @@ def get_palette():
 
 
 def get_lifx():
-	lan = LifxLAN(1)
-	lights = lan.get_lights()
-	return lights[0]
+	#lan = LifxLAN(1)
+	#lights = lan.get_lights()
+	return LifxLight("D0:73:D5:13:F3:BC", "192.168.1.12") #lights[0]
 
 
 def get_led():
 	#scanner = flux_led.BulbScanner()
 	#lights = scanner.scan(timeout=1)
-	light = flux_led.WifiLedBulb('192.168.1.11')
-	return light
+	return flux_led.WifiLedBulb('192.168.1.11')
 
 
 main_light = Light(get_lifx())
@@ -145,6 +149,20 @@ def test_mode(mode, state):
 	main_light.turn_on()
 	sleep(3)
 
+"""
+led strip preset patterns:
+(speed - heigher is faster)
+0x25    7 colour fade
+0x26    Red fade on/off
+0x27    Green fade on/off
+0x28    Blue fade on/off
+0x29    Yellow fade on/off
+0x30    7 colour strobe/flash
+0x31-7  Red/Green/Blue/Yellow/Cyan/Magenta/white flash
+0x38    7 colour switch
+"""
+
+
 if __name__ == "__main__":
 	if False:
 		test_mode('mode/day', 'auto')
@@ -159,10 +177,14 @@ if __name__ == "__main__":
 			main_light.turn_on()
 			led_light.turn_on()
 			sleep(2)
-	if True:
+	if False:
 		set('off')
 		sleep(2)
 		set('mode/day/auto')
 		sleep(2)
 		set('on')
+	if True:
+		pass
+		#led_light.controller.setPresetPattern(0x25, 80)
+		#main_light.turn_on()
 	#set('mode/night')
