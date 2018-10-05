@@ -7,6 +7,7 @@ from subprocess import Popen
 import light_control
 from data import log, get_logs
 import re
+from events import get_events
 
 try:
 	from flic import flic_client
@@ -100,6 +101,9 @@ def update():
 	Popen(['git', 'pull'], cwd=cur_dir)
 	return "Done"
 
+@app.route('/api/calendar/events')
+def cal_events():
+	return flask.jsonify(get_events())
 
 start_scheduler()
 
