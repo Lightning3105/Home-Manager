@@ -19,7 +19,7 @@ except OSError:
 
 app = flask.Flask(__name__)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}, r"/auth/*": {"origins": "*"}})
+CORS(app)
 
 app.secret_key = "\x9d\x04/\xc6~\x9e\xea.\xe6\xfa\x89d\xf4M\xb4i\xf8\xf3\x12L\x89GuL"
 
