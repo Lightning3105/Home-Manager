@@ -3,6 +3,7 @@ oauth2client
 python-dateutil
 requests
 flask
+flask_cors
 lifxlan
 flux_led
 gevent
