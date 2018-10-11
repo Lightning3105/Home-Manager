@@ -1,5 +1,9 @@
 {
   "palette": {
+  	"morning": {
+		"main": [1.0, 0.8, 0.64],
+ 		"led": [0.1, 0.1, 0.1]
+  	},
     "day": {
       "main": [0.0, 0.72, 1.0],
       "led": [0.75, 1.0, 0.51]
@@ -23,6 +27,7 @@
     "hold": "lights/off"
   },
   "schedule": [
+  	{"time": "5:30", "day": ["all"], "command": "lights/mode/morning/auto"},
     {"time": "11:00", "day": ["all"], "command": "lights/mode/day/auto"},
     {"time": "sunset", "offset": -3600, "day": ["all"], "command": "lights/mode/day/on"},
     {"time": "sunset", "day": ["all"], "command": "lights/mode/evening/on"},

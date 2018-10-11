@@ -39,11 +39,14 @@ def _schedule():
 				else:
 					t = parse(trigger["time"])
 				t += timedelta(seconds=int(trigger.get('offset', 0)))
-				print(trigger, t)
+				#print(trigger, t)
 				#print("{} triggers at {} in {} seconds".format(trigger["command"], t, (t - cur_time).seconds))
 				if abs((t - cur_time).seconds) < 10:
 					log(trigger, 'triggered at', t)
-					get("http://localhost/api/" + trigger["command"])
+					try:
+					    get("http://localhost/api/" + trigger["command"])
+					except:
+					    log("Failed to send command")
 		time.sleep(5)
 
 def start_scheduler():
