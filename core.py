@@ -23,6 +23,7 @@ CORS(app)
 
 app.secret_key = "\x9d\x04/\xc6~\x9e\xea.\xe6\xfa\x89d\xf4M\xb4i\xf8\xf3\x12L\x89GuL"
 
+
 @app.route('/api/manager/screen/<power>')
 def screen(power):
 	if power in ["on", True, 1]: power = '1'
@@ -36,7 +37,15 @@ def screen(power):
 def restart():
 	Popen(['sudo', 'systemctl', 'restart', 'home_manager.service'])
 	return "Done"
+#/sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness
+@app.route('/api/dashboard/screen/<power>')
+def dashboard_screen(power):
+	if power in ["on", True]: power = 255
+	if power in ["off", False]: power = 0
+	power = str(power)
+	Popen(['ssh', 'su@192.168.1.9', '-p 2222', "su -c \"echo {} > /sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness\"".format(power)])
 
+	return "Done"
 
 @app.route('/')
 def root():
@@ -99,11 +108,16 @@ def logs():
 	return out
 
 @app.route('/api/manager/update')
-@app.before_first_request
 def update():
 	cur_dir = path.dirname(path.realpath(__file__))
 	Popen(['git', 'pull'], cwd=cur_dir)
 	return "Done"
+
+@app.before_first_request
+def on_start():
+	update()
+	Popen(['node', 'dial-server.js'], cwd=path.dirname(path.realpath(__file__)) + '/cast') # port 3001
+	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay') # port 3002
 
 @app.route('/api/calendar/events')
 def cal_events():
