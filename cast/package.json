@@ -1,0 +1,64 @@
+{
+  "_from": "peer-dial",
+  "_id": "peer-dial@0.0.8",
+  "_inBundle": false,
+  "_integrity": "sha512-MIj4LMUeNrDMsvGHVj3jr1r1ayfMbRCaBcFBXh7E9hD7yFCNy3FG/hINE4MWYL0SkHIMt8xqkYuLZVZHeWpgfQ==",
+  "_location": "/peer-dial",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "peer-dial",
+    "name": "peer-dial",
+    "escapedName": "peer-dial",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/peer-dial/-/peer-dial-0.0.8.tgz",
+  "_shasum": "a74d40146aef8e5f23d3ea191ab058121a1334a0",
+  "_spec": "peer-dial",
+  "_where": "/mnt/documents/Workspace/home_manager/cast",
+  "author": {
+    "name": "Louay Bassbouss",
+    "email": "louay.bassbouss@fokus.fraunhofer.de"
+  },
+  "bugs": {
+    "url": "https://github.com/fraunhoferfokus/peer-dial/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "cors": "^2.7.1",
+    "ejs": "2.5.7",
+    "express": "4.12.4",
+    "gate": "^0.3.0",
+    "node-uuid": "1.4.1",
+    "opn": "2.0.0",
+    "peer-ssdp": "0.0.5",
+    "xml2js": "0.4.9"
+  },
+  "deprecated": false,
+  "description": "Nodejs implementation of the Discovery and Launch Protocol DIAL",
+  "homepage": "https://github.com/fraunhoferfokus/peer-dial#readme",
+  "keywords": [
+    "ssdp",
+    "upnp",
+    "nsd",
+    "discovery",
+    "launch",
+    "dial",
+    "multiscreen",
+    "chromecast"
+  ],
+  "main": "index",
+  "name": "peer-dial",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fraunhoferfokus/peer-dial.git"
+  },
+  "version": "0.0.8"
+}

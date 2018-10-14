@@ -1,0 +1,17 @@
+{
+  "conversation": {
+    "language": "en-GB",
+    "audio": {
+      "sampleRateOut": 24000,
+      "sampleRateIn": 24000
+    }
+  },
+  "users": {
+    "james": {
+      "keyFilePath": "/mnt/documents/Workspace/home_manager/assistant-relay/server/configurations/secrets/james.json",
+      "savedTokensPath": "/mnt/documents/Workspace/home_manager/assistant-relay/server/configurations/tokens/james-tokens.json"
+    }
+  },
+  "port": "3002",
+  "assistants": {}
+}
