@@ -54,7 +54,7 @@ def dashboard_screen(power):
 
 	return "Done"
 
-@app.route('/')
+@app.route('/dashboard')
 def root():
 	return flask.send_file('frontend/index.html')
 
