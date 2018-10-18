@@ -49,8 +49,14 @@ class Light:
 
 	def is_on(self):
 		if self.lifx:
-			return self.controller.get_power() == 65535
+			try:
+				return self.controller.get_power() == 65535
+			except WorkflowException as e:
+				log(e)
+				print(e)
+				return False
 		if self.led:
+			self.controller.update_state()
 			return self.controller.is_on
 
 	def set_colour(self, colour=None, duration=500):
@@ -222,7 +228,9 @@ if __name__ == "__main__":
 		sleep(2)
 		set('on')
 	if True:
-		print(set('on/get'))
+		while True:
+			print(set('on/get'), main_light.is_on(), led_light.is_on())
+			sleep(1)
 	#led_light.controller.setPresetPattern(0x25, 80)
 	#main_light.turn_on()
 	#set('mode/night')
