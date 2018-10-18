@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 import requests
 from schedule import start_scheduler
-from subprocess import Popen
+from subprocess import Popen, PIPE
 import light_control
 from data import log, get_logs
 import re
@@ -42,8 +42,15 @@ def restart():
 def dashboard_screen(power):
 	if power in ["on", True]: power = 255
 	if power in ["off", False]: power = 0
+	if power == "toggle":
+		current = Popen(['ssh', 'james@192.168.1.9', '-p 2222', "su -c \"cat /sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness\""], stdout=PIPE)
+		current = int(current.stdout.read().strip())
+		if current > 100:
+			power = 0
+		else:
+			power = 255
 	power = str(power)
-	Popen(['ssh', 'su@192.168.1.9', '-p 2222', "su -c \"echo {} > /sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness\"".format(power)])
+	Popen(['ssh', 'james@192.168.1.9', '-p 2222', "su -c \"echo {} > /sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness\"".format(power)])
 
 	return "Done"
 
