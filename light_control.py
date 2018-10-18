@@ -115,6 +115,8 @@ def _set(command):
 		if command[1] == 'get':
 			if command[0] == 'mode':
 				return data_file.get('mode')
+			if command[0] == 'on':
+				return get_on()
 	if len(command) == 3:
 		if command[2] == 'get':
 			colours = get_palette()[command[1]]
@@ -131,6 +133,11 @@ def _set(command):
 			command = ['auto']
 		else:
 			command = command[2:]
+	if command[0] == 'toggle':
+		if get_on() == 2:
+			command[0] = 'off'
+		if get_on() < 2:
+			command[0] = 'on'
 	if command[0] == 'on':
 		main_light.turn_on()
 		led_light.turn_on()
@@ -177,6 +184,9 @@ def test_mode(mode, state):
 	main_light.turn_on()
 	sleep(3)
 
+def get_on():
+	return main_light.is_on() + led_light.is_on()
+
 """
 led strip preset patterns:
 (speed - heigher is faster)
@@ -212,9 +222,7 @@ if __name__ == "__main__":
 		sleep(2)
 		set('on')
 	if True:
-		set('mode/night')
-		print(set('mode/day/get'))
-		print(set('mode/get'))
+		print(set('on/get'))
 	#led_light.controller.setPresetPattern(0x25, 80)
 	#main_light.turn_on()
 	#set('mode/night')
