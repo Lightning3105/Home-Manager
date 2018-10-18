@@ -118,7 +118,8 @@ def logs():
 @app.route('/api/manager/update')
 def update():
 	cur_dir = path.dirname(path.realpath(__file__))
-	Popen(['git', 'pull'], cwd=cur_dir)
+	Popen(['git', 'pull'], cwd=cur_dir).wait()
+	restart()
 	return "Done"
 
 @app.before_first_request
