@@ -116,15 +116,15 @@ def logs():
 	return out
 
 @app.route('/api/manager/update')
-def update():
+def update(restart=True):
 	cur_dir = path.dirname(path.realpath(__file__))
 	Popen(['git', 'pull'], cwd=cur_dir).wait()
-	restart()
+	if restart: restart()
 	return "Done"
 
 @app.before_first_request
 def on_start():
-	update()
+	#update(False)
 	Popen(['node', 'dial-server.js'], cwd=path.dirname(path.realpath(__file__)) + '/cast') # port 3001
 	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay') # port 3002
 
