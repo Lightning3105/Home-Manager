@@ -56,7 +56,23 @@ def dashboard_screen(power):
 
 @app.route('/')
 def root():
-	return 'Welcome'
+	return flask.send_file('frontend/index.html')
+
+@app.route('/css/<path:path>')
+def send_css(path):
+	return flask.send_file('frontend/css/' + path)
+
+@app.route('/js/<path:path>')
+def send_js(path):
+	return flask.send_file('frontend/js/' + path)
+
+@app.route('/img/<path:path>')
+def send_img(path):
+	return flask.send_file('frontend/img/' + path)
+
+@app.route('/fonts/<path:path>')
+def send_font(path):
+	return flask.send_file('frontend/fonts/' + path)
 
 @app.route('/api/server/<path:path>')
 def server_proxy(path):
