@@ -103,13 +103,27 @@ connect_lights()
 
 def set(command):
 	try:
-		_set(command)
+		return _set(command)
 	except Exception as e:
 		log(traceback.format_exc())
 		print(traceback.format_exc())
+		return "Failed"
 
 def _set(command):
 	command = command.split('/')
+	if len(command) == 2:
+		if command[1] == 'get':
+			if command[0] == 'mode':
+				return data_file.get('mode')
+	if len(command) == 3:
+		if command[2] == 'get':
+			colours = get_palette()[command[1]]
+			hexed = {}
+			for key, value in colours.items():
+				print(key, [hex(int(c * 255)) for c in value])
+				h = "".join([hex(int(c * 255)).replace('0x', '').zfill(2) for c in value])
+				hexed[key] = '#' + h
+			return hexed
 	if command[0] == 'mode':
 		mode = command[1]
 		data_file.set('mode', mode)
@@ -130,6 +144,8 @@ def _set(command):
 		pass # Don't update
 	if command[0] == 'reconnect':
 		connect_lights()
+
+	return "Done"
 
 
 def lifx_convert_colour(colour):
@@ -196,7 +212,9 @@ if __name__ == "__main__":
 		sleep(2)
 		set('on')
 	if True:
-		pass
-		#led_light.controller.setPresetPattern(0x25, 80)
-		#main_light.turn_on()
+		set('mode/night')
+		print(set('mode/day/get'))
+		print(set('mode/get'))
+	#led_light.controller.setPresetPattern(0x25, 80)
+	#main_light.turn_on()
 	#set('mode/night')

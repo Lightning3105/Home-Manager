@@ -60,13 +60,14 @@ def server_proxy(path):
 
 @app.route('/api/lights/<path:command>')
 def lights(command):
-	light_control.set(command)
-	return "Done"
+	return flask.jsonify(light_control.set(command))
+	
 
 @app.route('/api/action/night')
 def goodnight():
 	screen(0)
 	server_proxy('suspend')
+	dashboard_screen(0)
 	return "Done"
 
 @app.route('/api/')
