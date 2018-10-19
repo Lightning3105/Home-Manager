@@ -38,13 +38,19 @@ def restart():
 	Popen(['sudo', 'systemctl', 'restart', 'home_manager.service'])
 	return "Done"
 #/sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness
+
+@app.route('/api/dashboard/screen/get')
+def get_screen_brightness():
+    current = Popen(['ssh', 'james@192.168.1.9', '-p 2222', "su -c \"cat /sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness\""], stdout=PIPE)
+    current = current.stdout.read().strip()
+    return current
+
 @app.route('/api/dashboard/screen/<power>')
 def dashboard_screen(power):
 	if power in ["on", True]: power = 255
-	if power in ["off", False]: power = 0
+	if power in ["off", False]: power = 1
 	if power == "toggle":
-		current = Popen(['ssh', 'james@192.168.1.9', '-p 2222', "su -c \"cat /sys/devices/platform/omap_i2c.2/i2c-2/2-002c/backlight/bowser/brightness\""], stdout=PIPE)
-		current = int(current.stdout.read().strip())
+		current = int(get_screen_brightness())
 		if current > 100:
 			power = 0
 		else:
