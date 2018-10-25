@@ -29,6 +29,7 @@
   "schedule": [
   	{"time": "5:30", "day": ["all"], "command": "lights/mode/morning/auto"},
     {"time": "11:00", "day": ["all"], "command": "lights/mode/day/auto"},
+    {"time": "11:00", "day": ["all"], "command": "dashboard/screen/on"},
     {"time": "sunset", "offset": -3600, "day": ["all"], "command": "lights/mode/day/on"},
     {"time": "sunset", "day": ["all"], "command": "lights/mode/evening/on"},
     {"time": "22:30", "day": ["all"], "command": "action/night"},
