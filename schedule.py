@@ -6,7 +6,7 @@ from dateutil.tz import tzlocal
 from datetime import datetime, timedelta
 from requests import get
 from suntime import Sun
-from data import log
+from data import log, data_file
 
 latitude = 50.9397733
 longitude = -1.4016822
@@ -19,6 +19,9 @@ def get_schedules():
 
 def _schedule():
 	while True:
+		print(data_file.get('suspend_schedule'))
+		if data_file.get('suspend_schedule'):
+			continue
 		cur_time = datetime.now()
 		for trigger in get_schedules(): # type: dict
 			days = trigger["day"]

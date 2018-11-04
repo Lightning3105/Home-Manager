@@ -7,7 +7,7 @@ import requests
 from schedule import start_scheduler
 from subprocess import Popen, PIPE
 import light_control
-from data import log, get_logs
+from data import log, get_logs, data_file
 import re
 from events import get_events
 
@@ -52,7 +52,7 @@ def dashboard_screen(power):
 	if power == "toggle":
 		current = int(get_screen_brightness())
 		if current > 100:
-			power = 0
+			power = 1
 		else:
 			power = 255
 	power = str(power)
@@ -154,7 +154,14 @@ def on_start():
 def cal_events():
 	return flask.jsonify(get_events())
 
+@app.route('/api/scheduler/<status>')
+def scheduler_status(status):
+	if status in ['suspend', 'off' 'false']: status = True
+	if status in ['run', 'on', 'true']: status = False
+	data_file.set('suspend_schedule', status)
+	return "Done"
+
 start_scheduler()
 
 if __name__ == "__main__":
-	app.run(debug=True, host='0.0.0.0')
+	app.run(debug=True, port=4000)
