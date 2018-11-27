@@ -83,8 +83,7 @@ def root():
 		'/api/manager/update',
 	]
 	for command in commands:
-		out += f"<a href='{command}'>{command}</a></br>"
-
+		out += "<a href='{}'>{}</a></br>".format(command, command)
 
 	out += "</body>"
 	return out

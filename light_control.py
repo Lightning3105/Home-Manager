@@ -177,7 +177,7 @@ def get_colours():
 	lc = led_light.get_colour()
 	lc = [round(c/255, 2) for c in lc]
 
-	out = f"\"main\": {mc},\n\"led\": {lc}"
+	out = "\"main\": {},\n\"led\": {}".format(mc, lc)
 	print(out)
 	return out
 
