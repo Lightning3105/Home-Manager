@@ -128,7 +128,6 @@ def _set(command):
 			colours = get_palette()[command[1]]
 			hexed = {}
 			for key, value in colours.items():
-				print(key, [hex(int(c * 255)) for c in value])
 				h = "".join([hex(int(c * 255)).replace('0x', '').zfill(2) for c in value])
 				hexed[key] = '#' + h
 			return hexed
@@ -178,7 +177,9 @@ def get_colours():
 	lc = led_light.get_colour()
 	lc = [round(c/255, 2) for c in lc]
 
-	print(""""main": {},\n"led": {}""".format(mc, lc))
+	out = f"\"main\": {mc},\n\"led\": {lc}"
+	print(out)
+	return out
 
 def test_mode(mode, state):
 	led_light.turn_off()

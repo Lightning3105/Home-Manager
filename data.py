@@ -15,7 +15,7 @@ class File():
 
 	def get(self, key):
 		data = self.load()
-		return data[key]
+		return data.get(key, None)
 
 	def set(self, key, value):
 		data = self.load()
@@ -43,4 +43,4 @@ def log(*args):
 
 def get_logs():
 	with open(log_file, 'r') as f:
-		return f.read().split('\n')
+		return f.read().split('\n')[-500:]

@@ -1,8 +1,9 @@
 import datetime
+from dateutil.parser import parse
+import pytz
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
-
 # If modifying these scopes, delete the file token.json.
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 
@@ -61,5 +62,29 @@ def get_events():
 	return all_events
 
 
+def first_event_time() -> datetime.datetime:
+	events = get_events()
+	for event in events:
+		if 'dateTime' in event['start'].keys():
+			event['start']['dateTime'] = parse(event['start']['dateTime'])
+		else:
+			event['start']['dateTime'] = parse(event['start']['date'] + "T00:00:00Z")
+	events.sort(key=lambda event: event['start']['dateTime'])
+
+	firstTime = None
+
+	if datetime.datetime.now().hour <= 5:
+		day = datetime.datetime.now().date()
+	else:
+		day = datetime.datetime.now().date() + datetime.timedelta(days=1)
+
+	for event in events:
+		time = event['start']['dateTime']
+		if day == time.date():
+			firstTime = time
+			break
+
+	return firstTime
+
 if __name__ == '__main__':
-	print(get_events())
+	first_event_time()

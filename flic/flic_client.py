@@ -43,6 +43,7 @@ def got_info(items):
 	for bd_addr in items["bd_addr_of_verified_buttons"]:
 		got_button(bd_addr)
 
+# TODO: Double click and hold
 def handle_click(channel, click_type, was_queued, time_diff):
 	global timer
 	if click_type == fliclib.ClickType.ButtonDown:

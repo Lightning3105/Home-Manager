@@ -8,8 +8,8 @@
   },
   "users": {
     "james": {
-      "keyFilePath": "/mnt/documents/Workspace/home_manager/assistant-relay/server/configurations/secrets/james.json",
-      "savedTokensPath": "/mnt/documents/Workspace/home_manager/assistant-relay/server/configurations/tokens/james-tokens.json"
+      "keyFilePath": "/home/james/Documents/Workspace/home_manager/assistant-relay/server/configurations/secrets/james.json",
+      "savedTokensPath": "/home/james/Documents/Workspace/home_manager/assistant-relay/server/configurations/tokens/james-tokens.json"
     }
   },
   "port": "3002",

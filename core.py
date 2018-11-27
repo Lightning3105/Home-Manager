@@ -60,8 +60,37 @@ def dashboard_screen(power):
 
 	return "Done"
 
-@app.route('/dashboard')
+
+@app.route('/')
 def root():
+	out= """
+	<head>
+		<title>Control Panel</title>
+	</head>
+	
+	<body>
+	"""
+	commands = [
+		'/api/lights/on',
+		'/api/lights/off',
+		'/api/lights/mode/day',
+		'/api/lights/mode/evening',
+		'/api/lights/mode/night',
+		'/api/lights/mode/dark/silent',
+		'/api/lights/get_config',
+		'/api/dashboard/screen/on',
+		'/api/dashboard/screen/off',
+		'/api/manager/update',
+	]
+	for command in commands:
+		out += f"<a href='{command}'>{command}</a></br>"
+
+
+	out += "</body>"
+	return out
+
+@app.route('/dashboard')
+def dashboard():
 	return flask.send_file('frontend/index.html')
 
 @app.route('/css/<path:path>')
@@ -87,9 +116,15 @@ def server_proxy(path):
 	except requests.exceptions.ConnectionError:
 		return 'Server connection not established'
 
+
 @app.route('/api/lights/<path:command>')
 def lights(command):
 	return flask.jsonify(light_control.set(command))
+
+
+@app.route('/api/lights/get_config')
+def get_light_config():
+	return light_control.get_colours().replace("\n", "</br>")
 	
 
 @app.route('/api/action/night')

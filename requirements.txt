@@ -7,3 +7,5 @@ flask_cors
 lifxlan
 flux_led
 gevent
+spotipy
+meross_iot

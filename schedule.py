@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from requests import get
 from suntime import Sun
 from data import log, data_file
+from events import first_event_time
 
 latitude = 50.9397733
 longitude = -1.4016822
@@ -15,11 +16,13 @@ sun = Sun(latitude, longitude)
 
 def get_schedules():
 	with open('config.json') as f:
-		return load(f)['schedule']
+		out = load(f)['schedule']
+	out.append({"time": (first_event_time() + timedelta(hours=-3)).strftime("%H:%M"), "day": ["all"], "command": "lights/on"})
+	# TODO: Make gradual
+	return out
 
 def _schedule():
 	while True:
-		print(data_file.get('suspend_schedule'))
 		if data_file.get('suspend_schedule'):
 			continue
 		cur_time = datetime.now()
