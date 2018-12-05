@@ -23,6 +23,7 @@ def get_schedules():
 
 def _schedule():
 	while True:
+		doLog = True
 		if data_file.get('suspend_schedule'):
 			continue
 		cur_time = datetime.now()
@@ -33,11 +34,13 @@ def _schedule():
 					t = sun.get_sunset_time().astimezone(tz=tzlocal()).replace(tzinfo=None)
 					#print("sunset", t)
 				elif trigger["time"][0] == "M":
+					doLog = False
 					interval = int(trigger["time"][1:])
 					t = cur_time
 					while t.minute % interval != 0:
 						t += timedelta(seconds=5)
 				elif trigger["time"][0] == "H":
+					doLog = False
 					interval = int(trigger["time"][1:])
 					t = cur_time
 					while t.hour % interval != 0:
@@ -48,7 +51,8 @@ def _schedule():
 				#print(trigger, t)
 				#print("{} triggers at {} in {} seconds".format(trigger["command"], t, (t - cur_time).seconds))
 				if abs((t - cur_time).seconds) < 10:
-					log(trigger, 'triggered at', t)
+					if doLog:
+						log(trigger, 'triggered at', t)
 					try:
 					    get("http://localhost/api/" + trigger["command"])
 					except:

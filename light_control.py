@@ -156,6 +156,8 @@ def _set(command):
 		pass # Don't update
 	if command[0] == 'reconnect':
 		connect_lights()
+	else:
+		log("Lights: ", command)
 
 	return "Done"
 

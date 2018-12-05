@@ -183,6 +183,7 @@ def on_start():
 	#update(False)
 	Popen(['node', 'dial-server.js'], cwd=path.dirname(path.realpath(__file__)) + '/cast') # port 3001
 	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay') # port 3002
+	#curl -d '{"command":"hello world", "user":"james", "broadcast":"true"}' -H "Content-Type: application/json" -X POST http://192.168.1.4:\3002/assistant
 
 @app.route('/api/calendar/events')
 def cal_events():
@@ -198,4 +199,6 @@ def scheduler_status(status):
 start_scheduler()
 
 if __name__ == "__main__":
-	app.run(debug=True, port=4000)
+	#app.run(debug=True, port=4000)
+	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay')
+	input()
