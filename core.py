@@ -81,6 +81,7 @@ def root():
 		'/api/dashboard/screen/on',
 		'/api/dashboard/screen/off',
 		'/api/manager/update',
+		'api/server/suspend'
 	]
 	for command in commands:
 		out += "<a href='{}'>{}</a></br>".format(command, command)
