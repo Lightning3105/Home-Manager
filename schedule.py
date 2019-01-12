@@ -23,6 +23,8 @@ def get_schedules():
 
 def _schedule():
 	while True:
+		with open('scheduler_test', 'w') as f:
+			f.write(str(datetime.now()))
 		doLog = True
 		if data_file.get('suspend_schedule'):
 			continue
@@ -40,7 +42,6 @@ def _schedule():
 					while t.minute % interval != 0:
 						t += timedelta(seconds=5)
 				elif trigger["time"][0] == "H":
-					doLog = False
 					interval = int(trigger["time"][1:])
 					t = cur_time
 					while t.hour % interval != 0:
@@ -54,9 +55,9 @@ def _schedule():
 					if doLog:
 						log(trigger, 'triggered at', t)
 					try:
-					    get("http://localhost/api/" + trigger["command"])
+						get("http://localhost/api/" + trigger["command"])
 					except:
-					    log("Failed to send command")
+						log("Failed to send command")
 		time.sleep(5)
 
 def start_scheduler():
