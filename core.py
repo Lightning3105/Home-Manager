@@ -197,6 +197,7 @@ def scheduler_status(status):
 	data_file.set('suspend_schedule', status)
 	return "Done"
 
+log("========= STARTED =========")
 start_scheduler()
 
 if __name__ == "__main__":

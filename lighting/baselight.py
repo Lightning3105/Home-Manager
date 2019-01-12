@@ -24,7 +24,7 @@ class BaseLight:
 		if self._colourTarget is not None:
 			if self._colourTarget[0] != self.get_colour():
 				syncTime = max((syncTime, self._colourTarget[1]))
-				print("COLOUR:", type(self), self._colourTarget, self.get_colour())
+				#print("COLOUR:", type(self), self._colourTarget, self.get_colour())
 				if self._set_colour(*self._colourTarget):
 					self._colourTarget = None
 

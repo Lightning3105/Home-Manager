@@ -15,7 +15,7 @@ class MagicLight(BaseLight):
 		try:
 			self.controller = flux_led.WifiLedBulb(self.__ipaddr)
 		except socket.timeout as e:
-			log("MagicLight connection", e)
+			log("Magic Light error: Connection")
 
 	def test_connected(self):
 		if self.controller is None:

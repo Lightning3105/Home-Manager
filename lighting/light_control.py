@@ -48,8 +48,7 @@ def set(command):
 	try:
 		return _set(command)
 	except Exception as e:
-		log(traceback.format_exc())
-		print(traceback.format_exc())
+		log("General light set error:\n", traceback.format_exc())
 		return "Failed"
 
 def _set(command):

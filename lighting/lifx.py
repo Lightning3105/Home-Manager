@@ -20,7 +20,7 @@ class Lifx(BaseLight):
 			self.controller.set_power(1, duration=duration)
 			return True
 		except WorkflowException as e:
-			log("Lifx on error", e)
+			log("Lifx error: Turn on")
 			return False
 
 	def _turn_off(self, duration):
@@ -28,7 +28,7 @@ class Lifx(BaseLight):
 			self.controller.set_power(0, duration=duration)
 			return True
 		except WorkflowException as e:
-			log("Lifx off error", e)
+			log("Lifx error: Turn off")
 			return False
 
 	def _set_colour(self, colour, duration):
@@ -37,21 +37,21 @@ class Lifx(BaseLight):
 			self.controller.set_color(colour, duration=duration)
 			return True
 		except WorkflowException as e:
-			log("Lifx colour {} error".format(colour), e)
+			log("Lifx error: Set colour {}".format(colour))
 			return False
 
 	def is_on(self):
 		try:
 			return self.controller.get_power() == 65535
 		except WorkflowException as e:
-			log(e)
+			log("Lifx error: Is on")
 			return None
 
 	def get_colour(self):
 		try:
 			return self.convert_to_hex(self.controller.get_color())
 		except WorkflowException as e:
-			log(e)
+			log("Lifx error: Get colour")
 			return None
 
 	@staticmethod
@@ -59,7 +59,6 @@ class Lifx(BaseLight):
 		hexstring = hexstring.strip('#')
 		rgb = tuple(int(hexstring[i:i+2], 16) for i in (0, 2 ,4))
 		hsv = colorsys.rgb_to_hsv(*rgb)
-		print(hsv)
 		return hsv[0] * 65535, hsv[1] * 65535, hsv[2] * 257, 2500
 
 	@staticmethod

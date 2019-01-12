@@ -22,6 +22,7 @@ def get_schedules():
 	return out
 
 def _schedule():
+	log("Scheduler Started")
 	while True:
 		with open('scheduler_test', 'w') as f:
 			f.write(str(datetime.now()))
