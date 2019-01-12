@@ -6,7 +6,7 @@ from flask_cors import CORS
 import requests
 from schedule import start_scheduler
 from subprocess import Popen, PIPE
-import light_control
+from lighting import light_control
 from data import log, get_logs, data_file
 import re
 from events import get_events

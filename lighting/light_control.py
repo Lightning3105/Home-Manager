@@ -1,82 +1,35 @@
 import traceback
-
-from lifxlan import LifxLAN
-from lifxlan.light import Light as LifxLight
-from lifxlan.errors import WorkflowException
-import flux_led
 import colorsys
 from json import load
-from time import sleep
-from threading import Timer
+from time import sleep, time
 from data import log, data_file
 
+from lighting.lifx import Lifx
+from lighting.magichome import MagicLight
+
+
 class Light:
-	def __init__(self, controller):
+	def __init__(self, controller, name):
 		self.controller = controller
-		self.lifx = type(controller) == LifxLight
-		self.led = type(controller) == flux_led.WifiLedBulb
+		self.name = name
 
 	def turn_on(self, duration=600):
-		if self.lifx:
-			try:
-				self.controller.set_power(1, duration=duration)
-			except WorkflowException as e:
-				log(e)
-				print(e)
-		if self.led:
-			self.controller.turnOn()
-			if not self.is_on():
-				log("Led Strip unresponsive turn on")
-				connect_lights()
-				self.turn_on()
-
-		timer = Timer(1, self.set_colour)
-		timer.start()
+		self.controller.turn_on(duration)
+		self.set_colour()
 
 	def turn_off(self, duration=900):
-		if self.lifx:
-			try:
-				self.controller.set_power(0, duration=duration)
-			except WorkflowException as e:
-				log(e)
-				print(e)
-		if self.led:
-			self.controller.turnOff()
-			if self.is_on():
-				log("Led Strip unresponsive turn off")
-				connect_lights()
-				self.turn_off()
+		self.controller.turn_off(duration)
 
 	def is_on(self):
-		if self.lifx:
-			try:
-				return self.controller.get_power() == 65535
-			except WorkflowException as e:
-				log(e)
-				print(e)
-				return False
-		if self.led:
-			self.controller.update_state()
-			return self.controller.is_on
+		return self.controller.is_on()
 
 	def set_colour(self, colour=None, duration=500):
-		if self.is_on():
-			if self.lifx:
-				if colour is None:
-					colour = get_palette()[data_file.get('mode')]['main']
-				colour = lifx_convert_colour(colour)
-				self.controller.set_color(colour, duration=duration)
-			elif self.led:
-				if colour is None:
-					colour = get_palette()[data_file.get('mode')]['led']
-				colour = led_convert_colour(colour)
-				self.controller.setRgb(*colour)
+		if colour is None:
+			colour = get_palette()[data_file.get('mode')][self.name]
+		self.controller.set_colour(colour, duration=duration)
 
 	def get_colour(self):
-		if self.lifx:
-			return self.controller.get_color()
-		if self.led:
-			return self.controller.getRgb()
+		return self.controller.get_colour()
 
 
 def get_palette():
@@ -84,28 +37,12 @@ def get_palette():
 		return load(f)['palette']
 
 
-def get_lifx():
-	#lan = LifxLAN(1)
-	#lights = lan.get_lights()
-	return LifxLight("D0:73:D5:13:F3:BC", "192.168.1.12") #lights[0]
-
-
-def get_led():
-	#scanner = flux_led.BulbScanner()
-	#lights = scanner.scan(timeout=1)
-	return flux_led.WifiLedBulb('192.168.1.11')
-
 def connect_lights():
-	global main_light
-	global led_light
-	try:
-		main_light = Light(get_lifx())
-		led_light = Light(get_led())
-	except Exception as e:
-		log(e)
-		print(e)
+	main_light = Light(Lifx("D0:73:D5:13:F3:BC", "192.168.1.12"), 'main')
+	led_light = Light(MagicLight('192.168.1.11'), 'led')
 
-connect_lights()
+	return main_light, led_light
+
 
 def set(command):
 	try:
@@ -116,6 +53,7 @@ def set(command):
 		return "Failed"
 
 def _set(command):
+	main_light, led_light = connect_lights()
 	command = command.split('/')
 	if len(command) == 2:
 		if command[1] == 'get':
@@ -161,16 +99,6 @@ def _set(command):
 
 	return "Done"
 
-
-def lifx_convert_colour(colour):
-	out = colorsys.rgb_to_hsv(colour[0], colour[1], colour[2])  # + ('2500')
-	return (out[0] * 65535, out[1] * 65535, out[2] * 65535, 2500)
-
-
-def led_convert_colour(colour):
-	return (colour[0] * 255, colour[1] * 255, colour[2] * 255)
-
-
 def get_colours():
 	mc = main_light.get_colour()
 	mc = colorsys.hsv_to_rgb(mc[0] / 65535, mc[1] / 65535, mc[2] / 65535)
@@ -184,17 +112,26 @@ def get_colours():
 	return out
 
 def test_mode(mode, state):
+	print("=== {} ===".format(mode))
+	main_light, led_light = connect_lights()
 	led_light.turn_off()
 	main_light.turn_off()
-	sleep(3)
+	sleep(1)
 	set(mode + '/' + state)
 	sleep(1)
 	led_light.turn_on()
 	main_light.turn_on()
-	sleep(3)
+	input()
+
 
 def get_on():
 	return main_light.is_on() + led_light.is_on()
+
+def rgb2hex(r,g,b):
+    return "#{:02x}{:02x}{:02x}".format(r,g,b)
+
+def hex2rgb(hexcode):
+    return tuple(map(ord,hexcode[1:].decode('hex')))
 
 """
 led strip preset patterns:
@@ -209,13 +146,37 @@ led strip preset patterns:
 0x38    7 colour switch
 """
 
-
 if __name__ == "__main__":
+	main_light, led_light = connect_lights()
 	if False:
+		#print(main_light.get_colour())
+		#main_light.turn_off()
+		#sleep(2)
+		led_light.turn_on()
+		while True:
+			led_light.set_colour('#ff0000')
+			sleep(1)
+			led_light.set_colour('#ffff00')
+			sleep(1)
+			led_light.set_colour('#00ff00')
+			sleep(1)
+			led_light.set_colour('#00ffff')
+			sleep(1)
+			led_light.set_colour('#0000ff')
+			sleep(1)
+			led_light.set_colour('#ff00ff')
+			sleep(1)
+	if True:
 		test_mode('mode/day', 'auto')
 		test_mode('mode/evening', 'auto')
 		test_mode('mode/night', 'auto')
 		test_mode('mode/dark', 'auto')
+	if False:
+		led_light.turn_on()
+		led_light.controller._set_colour('#00ffff', 50000)
+		while True:
+			print(led_light.get_colour())
+			sleep(1)
 	if False:
 		while True:
 			main_light.turn_off()
@@ -230,10 +191,16 @@ if __name__ == "__main__":
 		set('mode/day/auto')
 		sleep(2)
 		set('on')
-	if True:
+	if False:
 		while True:
 			print(set('on/get'), main_light.is_on(), led_light.is_on())
 			sleep(1)
+	if False:
+		p = get_palette()
+		for key, value in p.items():
+			print('###', key, '###')
+			for key, value in value.items():
+				print(key, "#{:02x}{:02x}{:02x}".format(int(value[0] * 255), int(value[1] * 255), int(value[2] * 255)))
 	#led_light.controller.setPresetPattern(0x25, 80)
 	#main_light.turn_on()
 	#set('mode/night')

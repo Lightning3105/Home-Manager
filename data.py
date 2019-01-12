@@ -33,6 +33,7 @@ log_file = 'log.txt'
 
 def log(*args):
 	out = " ".join([str(a) for a in args])
+	print('>>', out)
 	now = datetime.now()
 	logstr = now.strftime('[%Y/%m/%d %H:%M:%S]') + " " + out + "\n"
 	if not os.path.exists(log_file):

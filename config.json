@@ -1,25 +1,25 @@
 {
   "palette": {
   	"morning": {
-		"main": [1.0, 0.8, 0.8],
- 		"led": [0.3, 0.3, 0.3]
+		"main": "#ffcccc",
+ 		"led": "#4c4c4c"
   	},
     "day": {
-      "main": [0.67, 1.0, 0.53],
-      "led": [0.0, 1.0, 1.0]
+      "main": "#aaff87",
+      "led": "#00ffff"
     },
 
     "evening": {
-      "main": [0.37, 0.19, 0.42],
-      "led": [0.98, 0.89, 0.07]
+      "main": "#5e306b",
+      "led": "#f9e211"
     },
     "night": {
-      "main": [0.22, 0.09, 0.17],
-      "led": [0.3, 0.14, 0.5]
+      "main": "#38162b",
+      "led": "#4c237f"
     },
     "dark": {
-      "main": [0.05, 0.0, 0.01],
-      "led": [0.05, 0.01, 0.02]
+      "main": "#0c0002",
+      "led": "#0c0205"
     }
   },
   "flic": {
@@ -35,7 +35,6 @@
     {"time": "sunset", "day": ["all"], "command": "lights/mode/evening/on"},
     {"time": "22:30", "day": ["all"], "command": "action/night"},
     {"time": "22:30", "day": ["all"], "command": "lights/mode/night/on"},
-    {"time": "23:30", "day": ["all"], "command": "lights/mode/dark/silent"},
-    {"time": "M5", "day": ["all"], "command": "lights/reconnect"}
+    {"time": "23:30", "day": ["all"], "command": "lights/mode/dark/silent"}
   ]
 }
