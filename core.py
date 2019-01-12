@@ -10,6 +10,7 @@ from lighting import light_control
 from data import log, get_logs, data_file
 import re
 from events import get_events
+from datetime import datetime
 
 try:
 	from flic import flic_client
@@ -81,7 +82,8 @@ def root():
 		'/api/dashboard/screen/on',
 		'/api/dashboard/screen/off',
 		'/api/manager/update',
-		'api/server/suspend'
+		'/api/server/suspend',
+		'/logs'
 	]
 	for command in commands:
 		out += "<a href='{}'>{}</a></br>".format(command, command)
@@ -153,19 +155,24 @@ def logs():
 			  </tr>
 	"""
 	lgs = get_logs()
+	today = False
 	for l in lgs:
 		regex = r"(\[\d*/\d*/\d*\s\d*\:\d*\:\d*\])\s(.*)"
 		matches = list(re.finditer(regex, l))
 		if len(matches) > 0:
 			t, m = matches[0].groups()
+			if t[1:].split(" ")[0] == datetime.now().strftime("%Y/%m/%d"):
+				today = True
+			else:
+				today = False
 		else:
 			t = ""
 			m = l
 		out += """
-		<tr>
+		<tr {}>
 			<td>{}</td>
 			<td>{}</td>
-		</tr>""".format(t, m)
+		</tr>""".format('style="color: red"' if today else '', t, m)
 	out += """</tr>
 	</table>
 	</body>"""
@@ -201,6 +208,6 @@ log("========= STARTED =========")
 start_scheduler()
 
 if __name__ == "__main__":
-	#app.run(debug=True, port=4000)
-	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay')
-	input()
+	app.run(debug=True, port=4000)
+	#Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay')
+	#input()
