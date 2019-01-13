@@ -2,10 +2,12 @@ import datetime
 from dateutil.parser import parse
 import pytz
 from googleapiclient.discovery import build
+import googleapiclient.errors
 from httplib2 import Http
 from oauth2client import file, client, tools
 # If modifying these scopes, delete the file token.json.
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+from data import log
 
 
 def main():
@@ -63,7 +65,11 @@ def get_events():
 
 
 def first_event_time() -> datetime.datetime:
-	events = get_events()
+	try:
+		events = get_events()
+	except googleapiclient.errors.HttpError:
+		log("Error getting calendar events")
+		return None
 	for event in events:
 		if 'dateTime' in event['start'].keys():
 			event['start']['dateTime'] = parse(event['start']['dateTime'])
