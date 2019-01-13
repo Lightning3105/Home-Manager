@@ -17,7 +17,12 @@ sun = Sun(latitude, longitude)
 def get_schedules():
 	with open('config.json') as f:
 		out = load(f)['schedule']
-	out.append({"time": (first_event_time() + timedelta(hours=-3)).strftime("%H:%M"), "day": ["all"], "command": "lights/on"})
+
+	fet = first_event_time()
+	if fet:
+		out.append({"time": (fet + timedelta(hours=-3)).strftime("%H:%M"), "day": ["all"], "command": "lights/on"})
+	else:
+		out.append({"time": parse('9:00').strftime("%H:%M"), "day": ["all"], "command": "lights/on"})
 	# TODO: Make gradual
 	return out
 
