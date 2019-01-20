@@ -1,0 +1,3 @@
+[submodule "assistant-relay"]
+	path = assistant-relay
+	url = https://github.com/greghesp/assistant-relay.git
