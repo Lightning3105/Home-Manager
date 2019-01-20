@@ -9,7 +9,7 @@ from subprocess import Popen, PIPE
 from lighting import light_control
 from data import log, get_logs, data_file
 import re
-from events import get_events
+from events import get_events, first_event_time
 from datetime import datetime
 
 try:
@@ -189,13 +189,17 @@ def update(res=True):
 @app.before_first_request
 def on_start():
 	#update(False)
-	Popen(['node', 'dial-server.js'], cwd=path.dirname(path.realpath(__file__)) + '/cast') # port 3001
+	#Popen(['node', 'dial-server.js'], cwd=path.dirname(path.realpath(__file__)) + '/cast') # port 3001
 	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay') # port 3002
 	#curl -d '{"command":"hello world", "user":"james", "broadcast":"true"}' -H "Content-Type: application/json" -X POST http://192.168.1.4:\3002/assistant
 
 @app.route('/api/calendar/events')
 def cal_events():
 	return flask.jsonify(get_events())
+
+@app.route('/api/calendar/first')
+def first_event():
+	return flask.jsonify(first_event_time())
 
 @app.route('/api/scheduler/<status>')
 def scheduler_status(status):
@@ -204,10 +208,15 @@ def scheduler_status(status):
 	data_file.set('suspend_schedule', status)
 	return "Done"
 
+@app.route('/camera')
+def camera_stream():
+	req = requests.get('http://192.168.1.6:5200/stream/video.mjpeg', stream=True)
+	return flask.Response(req.iter_content(chunk_size=1024), content_type=req.headers['content-type'])
+
 log("========= STARTED =========")
 start_scheduler()
 
 if __name__ == "__main__":
-	app.run(debug=True, port=4000)
+	app.run(host='192.168.1.4', debug=True, port=4000)
 	#Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay')
 	#input()

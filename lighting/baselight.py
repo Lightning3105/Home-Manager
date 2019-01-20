@@ -9,6 +9,7 @@ class BaseLight:
 		self.__queue = []
 
 	def update(self):
+		#TODO: actually keep track using a file/database
 		#print("""+++ {} +++\nTargets:\n\ton: {}\tcolour: {}\nPhsical:\n\ton: {}\tcolour: {}---------------""".format(type(self), self._onTarget, self._colourTarget, self.is_on(), self.get_colour()))
 		syncTime = 0
 		if self._onTarget is not None:

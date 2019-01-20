@@ -7,6 +7,7 @@ from data import log, data_file
 from lighting.lifx import Lifx
 from lighting.magichome import MagicLight
 
+from flux_led import PresetPattern
 
 class Light:
 	def __init__(self, controller, name):
@@ -63,11 +64,7 @@ def _set(command):
 	if len(command) == 3:
 		if command[2] == 'get':
 			colours = get_palette()[command[1]]
-			hexed = {}
-			for key, value in colours.items():
-				h = "".join([hex(int(c * 255)).replace('0x', '').zfill(2) for c in value])
-				hexed[key] = '#' + h
-			return hexed
+			return colours
 	if command[0] == 'mode':
 		mode = command[1]
 		data_file.set('mode', mode)
@@ -124,7 +121,8 @@ def test_mode(mode, state):
 
 
 def get_on():
-	return main_light.is_on() + led_light.is_on()
+	main_light, led_light = connect_lights()
+	return 1 if main_light.is_on() else 0 + 1 if led_light.is_on() else 0
 
 def rgb2hex(r,g,b):
     return "#{:02x}{:02x}{:02x}".format(r,g,b)
@@ -132,21 +130,11 @@ def rgb2hex(r,g,b):
 def hex2rgb(hexcode):
     return tuple(map(ord,hexcode[1:].decode('hex')))
 
-"""
-led strip preset patterns:
-(speed - heigher is faster)
-0x25    7 colour fade
-0x26    Red fade on/off
-0x27    Green fade on/off
-0x28    Blue fade on/off
-0x29    Yellow fade on/off
-0x30    7 colour strobe/flash
-0x31-7  Red/Green/Blue/Yellow/Cyan/Magenta/white flash
-0x38    7 colour switch
-"""
 
 if __name__ == "__main__":
 	main_light, led_light = connect_lights()
+	#if True:
+		#led_light.controller.controller.setPresetPattern(PresetPattern., 80)
 	if False:
 		#print(main_light.get_colour())
 		#main_light.turn_off()
@@ -165,7 +153,7 @@ if __name__ == "__main__":
 			sleep(1)
 			led_light.set_colour('#ff00ff')
 			sleep(1)
-	if True:
+	if False:
 		test_mode('mode/day', 'auto')
 		test_mode('mode/evening', 'auto')
 		test_mode('mode/night', 'auto')
