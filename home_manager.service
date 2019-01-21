@@ -1,0 +1,15 @@
+[Unit]
+Description=Python Home Manager
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=www-data
+WorkingDirectory=/home/pi/.scripts/home_manager
+ExecStart=/usr/local/bin/gunicorn --bind unix:/home/pi/.scripts/home_manager/run/home_manager.sock -m 007 wsgi:application
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
