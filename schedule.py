@@ -1,5 +1,6 @@
 from threading import  Thread
 import time
+import traceback
 from json import load
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -66,9 +67,16 @@ def _schedule():
 						log("Failed to send command")
 		time.sleep(5)
 
+def _schedule_handler():
+	try:
+		_schedule()
+	except Exception as e:
+		log("General scheduler error:\n", traceback.format_exc())
+		_schedule_handler()
+
 def start_scheduler():
 	#schedule.every().day.at("22:30").do(goodnight).tag()
-	t = Thread(target=_schedule)
+	t = Thread(target=_schedule_handler)
 	t.setDaemon(True)
 	t.start()
 
