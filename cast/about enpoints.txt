@@ -1,6 +1,0 @@
-The current URL for looking up available apps is this:
-https://clients3.google.com/cast/chromecast/device/baseconfig
-
-The response is the same format s the old URL except this one has an extra field in it called "enabled_app_ids". This is a list of IDs that the chromecast device should show as existing. Once the app is requested to load, the metadata for the app is loaded from:
-https://clients3.google.com/cast/chromecast/device/app?a={appid}
-where {appid} is the id of the app. 

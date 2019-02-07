@@ -186,12 +186,6 @@ def update(res=True):
 	if res: restart()
 	return "Done"
 
-@app.before_first_request
-def on_start():
-	#update(False)
-	#Popen(['node', 'dial-server.js'], cwd=path.dirname(path.realpath(__file__)) + '/cast') # port 3001
-	Popen(['npm', 'run', 'start'], cwd=path.dirname(path.realpath(__file__)) + '/assistant-relay') # port 3002
-	#curl -d '{"command":"hello world", "user":"james", "broadcast":"true"}' -H "Content-Type: application/json" -X POST http://192.168.1.4:\3002/assistant
 
 @app.route('/api/calendar/events')
 def cal_events():
@@ -210,7 +204,7 @@ def scheduler_status(status):
 
 @app.route('/camera')
 def camera_stream():
-	req = requests.get('http://192.168.1.6:5200/stream/video.mjpeg', stream=True)
+	req = requests.get('http://192.168.1.10/?action=stream', stream=True)
 	return flask.Response(req.iter_content(chunk_size=1024), content_type=req.headers['content-type'])
 
 log("========= STARTED =========")
