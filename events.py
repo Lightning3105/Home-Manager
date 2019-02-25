@@ -92,5 +92,14 @@ def first_event_time() -> datetime.datetime:
 
 	return firstTime
 
+def wakeup_time():
+	first = first_event_time() + datetime.timedelta(hours=-1.5)
+	base = first.replace(hour=9, minute=0)
+
+	if first.time() > base.time():
+		return base
+	else:
+		return first
+
 if __name__ == '__main__':
 	first_event_time()

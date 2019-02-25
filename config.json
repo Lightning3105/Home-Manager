@@ -35,6 +35,7 @@
     {"time": "sunset", "day": ["all"], "command": "lights/mode/evening/on"},
     {"time": "22:30", "day": ["all"], "command": "action/night"},
     {"time": "22:30", "day": ["all"], "command": "lights/mode/night/on"},
+    {"time": "23:00", "day":  ["all"], "command":  "say/its_time_to_start_thinking_about_bed"},
     {"time": "23:30", "day": ["all"], "command": "lights/mode/dark/silent"}
   ]
 }

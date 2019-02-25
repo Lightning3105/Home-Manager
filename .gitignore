@@ -6,3 +6,5 @@ storage.dat
 token.json
 passwords.py
 .idea/
+
+sound_output/

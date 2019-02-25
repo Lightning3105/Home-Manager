@@ -9,8 +9,9 @@ from subprocess import Popen, PIPE
 from lighting import light_control
 from data import log, get_logs, data_file
 import re
-from events import get_events, first_event_time
-from datetime import datetime
+import events
+from notify import say
+from datetime import datetime, timedelta
 
 try:
 	from flic import flic_client
@@ -189,11 +190,26 @@ def update(res=True):
 
 @app.route('/api/calendar/events')
 def cal_events():
-	return flask.jsonify(get_events())
+	return flask.jsonify(events.get_events())
 
 @app.route('/api/calendar/first')
 def first_event():
-	return flask.jsonify(first_event_time())
+	return flask.jsonify(events.first_event_time())
+
+@app.route('/api/calendar/first/say')
+def first_event_say():
+	say("your first event tomorrow is at {}".format(events.first_event_time().strftime("%-I:%M %P")))
+	return first_event()
+
+@app.route('/api/calendar/wakeup')
+def wakeup_time():
+	return flask.jsonify(events.wakeup_time())
+
+@app.route('/api/calendar/wakeup/say')
+def wakeup_time_say():
+	say("you need to wakeup for {}".format(events.wakeup_time().strftime("%-I:%M %P")))
+	return wakeup_time()
+
 
 @app.route('/api/scheduler/<status>')
 def scheduler_status(status):
@@ -206,6 +222,14 @@ def scheduler_status(status):
 def camera_stream():
 	req = requests.get('http://192.168.1.10/?action=stream', stream=True)
 	return flask.Response(req.iter_content(chunk_size=1024), content_type=req.headers['content-type'])
+
+@app.route('/api/say/<message>')
+def broadcast(message):
+	message = message.replace("_", " ")
+	return message
+
+#@app.route('/api/phone/battery/<percentage>')
+
 
 log("========= STARTED =========")
 start_scheduler()
